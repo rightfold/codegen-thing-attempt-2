@@ -5,7 +5,9 @@ module Feldspar.AST
   , ExprF(..)
   , Expr
   , pattern (:\)
-  , pattern (:$)
+  , pattern (:!)
+  , pattern Int'
+  , pattern Add'
 
     -- * Types
   , Type(..)
@@ -19,7 +21,7 @@ import Zabt (pattern Abs, Freshen(..), pattern Pat, Term)
 --------------------------------------------------------------------------------
 
 infixr 0 :\
-infixr 1 :$
+infixl 1 :!
 
 --------------------------------------------------------------------------------
 
@@ -40,6 +42,9 @@ data ExprF a
   = App a a
   | Lam Type a
 
+  | Int Integer
+  | Add
+
 deriving instance (Eq a) => Eq (ExprF a)
 deriving instance Functor ExprF
 deriving instance Foldable ExprF
@@ -49,8 +54,14 @@ type Expr = Term Name ExprF
 pattern (:\) :: Name -> Expr -> Expr
 pattern (:\) x e = Pat (Lam Number (Abs x e))
 
-pattern (:$) :: Expr -> Expr -> Expr
-pattern (:$) e1 e2 = Pat (App e1 e2)
+pattern (:!) :: Expr -> Expr -> Expr
+pattern (:!) e1 e2 = Pat (App e1 e2)
+
+pattern Int' :: Integer -> Expr
+pattern Int' n = Pat (Int n)
+
+pattern Add' :: Expr
+pattern Add' = Pat Add
 
 --------------------------------------------------------------------------------
 
