@@ -7,6 +7,7 @@ module Feldspar.AST
   , Expr
   , pattern (:\)
   , pattern (:!)
+  , pattern Let
   ) where
 
 import Data.String (IsString(..))
@@ -49,3 +50,6 @@ pattern (:\) x e = Pat (Lam (Abs x e))
 
 pattern (:!) :: Expr -> Expr -> Expr
 pattern (:!) e1 e2 = Pat (App e1 e2)
+
+pattern Let :: Name -> Expr -> Expr -> Expr
+pattern Let x e1 e2 = (x :\ e2) :! e1
