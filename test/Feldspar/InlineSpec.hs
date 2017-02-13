@@ -18,6 +18,9 @@ spec = do
     it "nontrivial Let" $
       inline (Let "x" (Var "x" :! Var "y") (Var "x"))
         == Let "x" (Var "x" :! Var "y") (Var "x")
+    it "trivial Lam" $
+      inline (Let "x" ("a" :\ Var "b") (Var "x"))
+        == Let "x" ("a" :\ Var "b") ("a" :\ Var "b")
     it "capture-avoidance" $
       inline (Let "x" (Var "y") ("y" :\ Var "x"))
         == Let "x" (Var "y") ("z" :\ Var "y")

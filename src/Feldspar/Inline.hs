@@ -17,9 +17,9 @@ inline :: Expr -> Expr
 inline (Var x) = Var x
 inline (Let x e1 e2) = do
   let e1' = inline e1
-  case size e1' of
-    1 -> Let x e1' (subst1 (x, e1') e2)
-    _ -> Let x e1' (inline e2)
+  if size e1' <= 2
+    then Let x e1' (subst1 (x, e1') e2)
+    else Let x e1' (inline e2)
 inline (x :\ e) = x :\ inline e
 inline (e1 :! e2) = inline e1 :! inline e2
 
