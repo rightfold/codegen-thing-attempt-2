@@ -29,16 +29,19 @@ infixl 1 :!
 
 --------------------------------------------------------------------------------
 
-data Name = Name Int Text
+data Name
+  = Local Int Text
+  | Global Int Text
 
 deriving instance Eq Name
 deriving instance Ord Name
 
 instance IsString Name where
-  fromString = Name 0 . fromString
+  fromString = Local 0 . fromString
 
 instance Freshen Name where
-  freshen (Name n t) = Name (n + 1) t
+  freshen (Local n t) = Local (n + 1) t
+  freshen (Global n t) = Global (n + 1) t
 
 --------------------------------------------------------------------------------
 
@@ -64,8 +67,9 @@ pattern Let x e1 e2 = (x :\ e2) :! e1
 --------------------------------------------------------------------------------
 
 prettyName :: Name -> Text
-prettyName (Name 0 t) = t
-prettyName (Name i t) = t <> "$" <> Text.pack (show i)
+prettyName (Local 0 t) = "%" <> t
+prettyName (Local i t) = "%" <> t <> "$" <> Text.pack (show i)
+prettyName (Global _ t) = "@" <> t
 
 prettyExpr :: Expr -> Text
 prettyExpr (Var x) = prettyName x
