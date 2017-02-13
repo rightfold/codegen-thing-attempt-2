@@ -6,7 +6,8 @@ cabal-version: >= 1.10
 library
   hs-source-dirs: src
   exposed-modules:
-    Feldspar.AST
+    Feldspar.AST,
+    Feldspar.Inline
   build-depends:
     base >= 4.9 && < 5,
     text >= 1.2 && < 2,
@@ -29,7 +30,8 @@ test-suite test
   hs-source-dirs: test
   main-is: Main.hs
   other-modules:
-    Feldspar.ASTSpec
+    Feldspar.ASTSpec,
+    Feldspar.InlineSpec
   build-depends:
     base >= 4.9 && < 5,
     feldspar,
