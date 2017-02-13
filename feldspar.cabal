@@ -28,6 +28,8 @@ test-suite test
 
   hs-source-dirs: test
   main-is: Main.hs
+  other-modules:
+    Feldspar.ASTSpec
   build-depends:
     base >= 4.9 && < 5,
     feldspar,
