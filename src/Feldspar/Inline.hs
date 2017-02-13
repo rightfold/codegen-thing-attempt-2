@@ -1,6 +1,7 @@
 module Feldspar.Inline
   ( -- * Inlining
     inline
+  , inline'
 
     -- * Analysis
   , size
@@ -14,14 +15,18 @@ import Zabt (subst1, pattern Var)
 --------------------------------------------------------------------------------
 
 inline :: Expr -> Expr
-inline (Var x) = Var x
-inline (Let x e1 e2) = do
-  let e1' = inline e1
+inline e = if e' == e then e' else inline e'
+  where e' = inline' e
+
+inline' :: Expr -> Expr
+inline' (Var x) = Var x
+inline' (Let x e1 e2) = do
+  let e1' = inline' e1
   if size e1' <= 2
-    then Let x e1' (subst1 (x, e1') e2)
-    else Let x e1' (inline e2)
-inline (x :\ e) = x :\ inline e
-inline (e1 :! e2) = inline e1 :! inline e2
+    then subst1 (x, e1') (inline' e2)
+    else Let x e1' (inline' e2)
+inline' (x :\ e) = x :\ inline' e
+inline' (e1 :! e2) = inline' e1 :! inline' e2
 
 --------------------------------------------------------------------------------
 
