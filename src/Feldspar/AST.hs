@@ -1,16 +1,12 @@
 module Feldspar.AST
   ( -- * Names
     Name(..)
+
     -- * Expressions
   , ExprF(..)
   , Expr
   , pattern (:\)
   , pattern (:!)
-  , pattern Int'
-  , pattern Add'
-
-    -- * Types
-  , Type(..)
   ) where
 
 import Data.String (IsString(..))
@@ -40,10 +36,7 @@ instance Freshen Name where
 
 data ExprF a
   = App a a
-  | Lam Type a
-
-  | Int Integer
-  | Add
+  | Lam a
 
 deriving instance (Eq a) => Eq (ExprF a)
 deriving instance Functor ExprF
@@ -52,22 +45,7 @@ deriving instance Foldable ExprF
 type Expr = Term Name ExprF
 
 pattern (:\) :: Name -> Expr -> Expr
-pattern (:\) x e = Pat (Lam Number (Abs x e))
+pattern (:\) x e = Pat (Lam (Abs x e))
 
 pattern (:!) :: Expr -> Expr -> Expr
 pattern (:!) e1 e2 = Pat (App e1 e2)
-
-pattern Int' :: Integer -> Expr
-pattern Int' n = Pat (Int n)
-
-pattern Add' :: Expr
-pattern Add' = Pat Add
-
---------------------------------------------------------------------------------
-
-data Type
-  = Number
-  | Boolean
-  | Function Type Type
-
-deriving instance Eq Type
