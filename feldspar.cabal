@@ -7,7 +7,9 @@ library
   hs-source-dirs: src
   exposed-modules:
     Feldspar.AST,
-    Feldspar.Inline
+    Feldspar.ConstantFold,
+    Feldspar.Inline,
+    Feldspar.Intrinsics
   build-depends:
     base >= 4.9 && < 5,
     text >= 1.2 && < 2,
@@ -31,6 +33,7 @@ test-suite test
   main-is: Main.hs
   other-modules:
     Feldspar.ASTSpec,
+    Feldspar.ConstantFoldSpec,
     Feldspar.InlineSpec
   build-depends:
     base >= 4.9 && < 5,
