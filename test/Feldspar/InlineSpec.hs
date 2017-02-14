@@ -2,7 +2,7 @@ module Feldspar.InlineSpec
   ( spec
   ) where
 
-import Feldspar.AST (pattern (:\), pattern (:!), pattern Let)
+import Feldspar.AST (pattern (:\), pattern (:!), pattern I32, pattern Let)
 import Feldspar.Inline (inline)
 import Prelude
 import Test.Hspec (describe, it, Spec)
@@ -21,6 +21,9 @@ spec = do
     it "trivial Lam" $
       inline (Let "x" ("a" :\ Var "b") (Var "x"))
         == ("a" :\ Var "b")
+    it "constants" $
+      inline (Let "x" (I32 42) (Var "x"))
+        == I32 42
     it "repeated inlining" $
       inline (Let "x" ("a" :\ Var "a") (Var "x" :! Var "y"))
         == Var "y"

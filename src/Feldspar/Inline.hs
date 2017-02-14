@@ -7,10 +7,9 @@ module Feldspar.Inline
   , size
   ) where
 
-import Data.Maybe (fromMaybe)
-import Feldspar.AST (pattern (:\), pattern (:!), Expr, pattern Let, Name)
+import Feldspar.AST (pattern (:\), pattern (:!), Expr, ExprF(..), pattern Let)
 import Prelude
-import Zabt (subst1, pattern Var)
+import Zabt (pattern Pat, subst1, pattern Var)
 
 --------------------------------------------------------------------------------
 
@@ -27,6 +26,7 @@ inline' (Let x e1 e2) = do
     else Let x e1' (inline' e2)
 inline' (x :\ e) = x :\ inline' e
 inline' (e1 :! e2) = inline' e1 :! inline' e2
+inline' (Pat (Const c)) = Pat (Const c)
 
 --------------------------------------------------------------------------------
 
@@ -34,3 +34,4 @@ size :: Expr -> Int
 size (Var _) = 1
 size (_ :\ e) = 1 + size e
 size (e1 :! e2) = 1 + size e1 + size e2
+size (Pat (Const _)) = 1

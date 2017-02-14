@@ -8,12 +8,18 @@ module Feldspar.AST
   , pattern (:\)
   , pattern (:!)
   , pattern Let
+  , pattern I32
+
+    -- * Constants
+  , Const(..)
 
     -- * Pretty
   , prettyName
   , prettyExpr
+  , prettyConst
   ) where
 
+import Data.Int (Int32)
 import Data.Monoid ((<>))
 import Data.String (IsString(..))
 import Data.Text (Text)
@@ -48,6 +54,7 @@ instance Freshen Name where
 data ExprF a
   = App a a
   | Lam a
+  | Const Const
 
 deriving instance (Eq a) => Eq (ExprF a)
 deriving instance Functor ExprF
@@ -63,6 +70,17 @@ pattern (:!) e1 e2 = Pat (App e1 e2)
 
 pattern Let :: Name -> Expr -> Expr -> Expr
 pattern Let x e1 e2 = (x :\ e2) :! e1
+
+pattern I32 :: Int32 -> Expr
+pattern I32 n = Pat (Const (I32Const n))
+
+--------------------------------------------------------------------------------
+
+data Const
+  = I32Const Int32
+
+deriving instance Eq Const
+deriving instance Ord Const
 
 --------------------------------------------------------------------------------
 
@@ -83,3 +101,7 @@ prettyExpr (x :\ e) =
 prettyExpr (e1 :! e2) =
   "(" <> prettyExpr e1 <> " "
   <> prettyExpr e2 <> ")"
+prettyExpr (Pat (Const c)) = prettyConst c
+
+prettyConst :: Const -> Text
+prettyConst (I32Const i) = Text.pack (show i)
