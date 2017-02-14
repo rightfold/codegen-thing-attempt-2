@@ -31,6 +31,6 @@ spec = do
     it "capture-avoidance" $
       inline (Let "x" (Var "y") ("y" :\ Var "x"))
         == ("z" :\ Var "y")
-    it "nested let" $
+    it "nested Let" $
       inline (Let "x" (Var "z") (Let "y" (Var "x") (Var "y")))
         == Var "z"
