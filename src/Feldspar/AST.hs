@@ -9,6 +9,7 @@ module Feldspar.AST
   , pattern (:!)
   , pattern Let
   , pattern I32
+  , bottomUpExpr
 
     -- * Constants
   , Const(..)
@@ -73,6 +74,13 @@ pattern Let x e1 e2 = (x :\ e2) :! e1
 
 pattern I32 :: Int32 -> Expr
 pattern I32 n = Pat (Const (I32Const n))
+
+bottomUpExpr :: (Expr -> Expr) -> Expr -> Expr
+bottomUpExpr f (Var x) = f (Var x)
+bottomUpExpr f (x :\ e) = f (x :\ bottomUpExpr f e)
+bottomUpExpr f (e1 :! e2) = f (bottomUpExpr f e1 :! bottomUpExpr f e2)
+bottomUpExpr f (Pat (Const c)) = f (Pat (Const c))
+bottomUpExpr _ _ = error "NYI"
 
 --------------------------------------------------------------------------------
 

@@ -7,7 +7,7 @@ module Feldspar.Inline
   , size
   ) where
 
-import Feldspar.AST (pattern (:\), pattern (:!), Expr, ExprF(..), pattern Let)
+import Feldspar.AST (pattern (:\), pattern (:!), bottomUpExpr, Expr, ExprF(..), pattern Let)
 import Prelude
 import Zabt (pattern Pat, subst1, pattern Var)
 
@@ -18,16 +18,12 @@ inline e = if e' == e then e' else inline e'
   where e' = inline' e
 
 inline' :: Expr -> Expr
-inline' (Var x) = Var x
-inline' (Let x e1 e2) = do
-  let e1' = inline' e1
-  if size e1' <= 2
-    then subst1 (x, e1') (inline' e2)
-    else Let x e1' (inline' e2)
-inline' (x :\ e) = x :\ inline' e
-inline' (e1 :! e2) = inline' e1 :! inline' e2
-inline' (Pat (Const c)) = Pat (Const c)
-inline' _ = error "NYI"
+inline' = bottomUpExpr go
+  where
+  go (Let x e1 e2)
+    | size e1 <= 2 = subst1 (x, e1) e2
+    | otherwise    = Let x e1 e2
+  go x = x
 
 --------------------------------------------------------------------------------
 

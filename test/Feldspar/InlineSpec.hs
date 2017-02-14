@@ -11,7 +11,8 @@ import Zabt (pattern Var)
 spec :: Spec
 spec = do
   describe "inline" $ do
-    it "trivial Var" $ inline (Var "x") == Var "x"
+    it "trivial Var" $
+      inline (Var "x") == Var "x"
     it "trivial Let" $
       inline (Let "x" (Var "y") (Var "x"))
         == Var "y"
@@ -30,3 +31,6 @@ spec = do
     it "capture-avoidance" $
       inline (Let "x" (Var "y") ("y" :\ Var "x"))
         == ("z" :\ Var "y")
+    it "nested let" $
+      inline (Let "x" (Var "z") (Let "y" (Var "x") (Var "y")))
+        == Var "z"
