@@ -15,3 +15,9 @@ spec = do
     it "integer addition" $
       constantFold (Var AddI32 :! I32 1 :! I32 2)
         == I32 3
+    it "integer addition identity elimination on the left" $
+      constantFold (Var AddI32 :! Var "x" :! I32 0)
+        == Var "x"
+    it "integer addition identity elimination on the right" $
+      constantFold (Var AddI32 :! I32 0 :! Var "x")
+        == Var "x"
