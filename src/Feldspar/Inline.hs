@@ -27,6 +27,7 @@ inline' (Let x e1 e2) = do
 inline' (x :\ e) = x :\ inline' e
 inline' (e1 :! e2) = inline' e1 :! inline' e2
 inline' (Pat (Const c)) = Pat (Const c)
+inline' _ = error "NYI"
 
 --------------------------------------------------------------------------------
 
@@ -35,3 +36,4 @@ size (Var _) = 1
 size (_ :\ e) = 1 + size e
 size (e1 :! e2) = 1 + size e1 + size e2
 size (Pat (Const _)) = 1
+size _ = error "NYI"

@@ -17,3 +17,4 @@ constantFold (x :\ e) = x :\ constantFold e
 constantFold (Var AddI32 :! I32 a :! I32 b) = I32 (a + b)
 constantFold (e1 :! e2) = constantFold e1 :! constantFold e2
 constantFold (Pat (Const c)) = Pat (Const c)
+constantFold _ = error "NYI"

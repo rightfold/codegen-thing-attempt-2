@@ -102,6 +102,7 @@ prettyExpr (e1 :! e2) =
   "(" <> prettyExpr e1 <> " "
   <> prettyExpr e2 <> ")"
 prettyExpr (Pat (Const c)) = prettyConst c
+prettyExpr _ = error "NYI"
 
 prettyConst :: Const -> Text
 prettyConst (I32Const i) = Text.pack (show i)
