@@ -24,6 +24,7 @@ import Data.Int (Int32)
 import Data.Monoid ((<>))
 import Data.String (IsString(..))
 import Data.Text (Text)
+import Feldspar.Intrinsic (Intrinsic, prettyIntrinsic)
 import Prelude
 import Zabt (pattern Abs, Freshen(..), pattern Pat, Term, pattern Var)
 
@@ -39,6 +40,7 @@ infixl 1 :!
 data Name
   = Local Int Text
   | Global Text
+  | Intrinsic Intrinsic
 
 deriving instance Eq Name
 deriving instance Ord Name
@@ -49,6 +51,7 @@ instance IsString Name where
 instance Freshen Name where
   freshen (Local n t) = Local (n + 1) t
   freshen (Global t) = Global t
+  freshen (Intrinsic i) = Intrinsic i
 
 --------------------------------------------------------------------------------
 
@@ -96,6 +99,7 @@ prettyName :: Name -> Text
 prettyName (Local 0 t) = "%" <> t
 prettyName (Local i t) = "%" <> t <> "$" <> Text.pack (show i)
 prettyName (Global t) = "@" <> t
+prettyName (Intrinsic i) = prettyIntrinsic i
 
 prettyExpr :: Expr -> Text
 prettyExpr (Var x) = prettyName x

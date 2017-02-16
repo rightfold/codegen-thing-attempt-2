@@ -9,7 +9,7 @@ library
     Feldspar.AST,
     Feldspar.ConstantFold,
     Feldspar.Inline,
-    Feldspar.Intrinsics
+    Feldspar.Intrinsic
   build-depends:
     base >= 4.9 && < 5,
     text >= 1.2 && < 2,
