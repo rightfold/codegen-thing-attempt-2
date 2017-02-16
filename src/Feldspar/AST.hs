@@ -8,6 +8,8 @@ module Feldspar.AST
   , Expr
   , pattern (:\)
   , pattern (:!)
+  , pattern (:+)
+  , pattern (:*)
   , pattern Let
   , pattern I32
   , bottomUpExpr
@@ -32,7 +34,7 @@ import Data.Int (Int32)
 import Data.Monoid ((<>))
 import Data.String (IsString(..))
 import Data.Text (Text)
-import Feldspar.Intrinsic (Intrinsic, prettyIntrinsic)
+import Feldspar.Intrinsic (Intrinsic(..), prettyIntrinsic)
 import Prelude
 import Zabt (pattern Abs, Freshen(..), pattern Pat, Term, pattern Var)
 
@@ -42,6 +44,8 @@ import qualified Data.Text as Text
 
 infixr 0 :\
 infixl 1 :!
+infixl 6 :+
+infixl 7 :*
 
 --------------------------------------------------------------------------------
 
@@ -85,6 +89,12 @@ pattern (:\) x e = Pat (Lam (Abs x e))
 
 pattern (:!) :: Expr -> Expr -> Expr
 pattern (:!) e1 e2 = Pat (App e1 e2)
+
+pattern (:+) :: Expr -> Expr -> Expr
+pattern (:+) e1 e2 = Var (Intrinsic AddI32) :! e1 :! e2
+
+pattern (:*) :: Expr -> Expr -> Expr
+pattern (:*) e1 e2 = Var (Intrinsic MulI32) :! e1 :! e2
 
 pattern Let :: Name -> Expr -> Expr -> Expr
 pattern Let x e1 e2 = (x :\ e2) :! e1
