@@ -9,6 +9,7 @@ import Prelude
 data Intrinsic
   = AddI32
 
+deriving instance Show Intrinsic
 deriving instance Eq Intrinsic
 deriving instance Ord Intrinsic
 

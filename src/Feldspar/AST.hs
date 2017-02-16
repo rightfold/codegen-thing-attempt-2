@@ -1,6 +1,7 @@
 module Feldspar.AST
   ( -- * Names
     Name(..)
+  , isLocal
 
     -- * Expressions
   , ExprF(..)
@@ -10,6 +11,7 @@ module Feldspar.AST
   , pattern Let
   , pattern I32
   , bottomUpExpr
+  , bottomUpExprM
 
     -- * Constants
   , Const(..)
@@ -23,6 +25,7 @@ module Feldspar.AST
   , sizeExpr
   ) where
 
+import Data.Functor.Identity (Identity(..))
 import Data.Int (Int32)
 import Data.Monoid ((<>))
 import Data.String (IsString(..))
@@ -45,6 +48,7 @@ data Name
   | Global Text
   | Intrinsic Intrinsic
 
+deriving instance Show Name
 deriving instance Eq Name
 deriving instance Ord Name
 
@@ -56,6 +60,10 @@ instance Freshen Name where
   freshen (Global t) = Global t
   freshen (Intrinsic i) = Intrinsic i
 
+isLocal :: Name -> Bool
+isLocal (Local _ _) = True
+isLocal _ = False
+
 --------------------------------------------------------------------------------
 
 data ExprF a
@@ -63,6 +71,7 @@ data ExprF a
   | Lam a
   | Const Const
 
+deriving instance (Show a) => Show (ExprF a)
 deriving instance (Eq a) => Eq (ExprF a)
 deriving instance Functor ExprF
 deriving instance Foldable ExprF
@@ -82,17 +91,21 @@ pattern I32 :: Int32 -> Expr
 pattern I32 n = Pat (Const (I32Const n))
 
 bottomUpExpr :: (Expr -> Expr) -> Expr -> Expr
-bottomUpExpr f (Var x) = f (Var x)
-bottomUpExpr f (x :\ e) = f (x :\ bottomUpExpr f e)
-bottomUpExpr f (e1 :! e2) = f (bottomUpExpr f e1 :! bottomUpExpr f e2)
-bottomUpExpr f (Pat (Const c)) = f (Pat (Const c))
-bottomUpExpr _ _ = error "NYI"
+bottomUpExpr f = runIdentity . bottomUpExprM (Identity . f)
+
+bottomUpExprM :: (Monad m) => (Expr -> m Expr) -> Expr -> m Expr
+bottomUpExprM k (Var x) = k (Var x)
+bottomUpExprM k (x :\ e) = k =<< (x :\) <$> bottomUpExprM k e
+bottomUpExprM k (e1 :! e2) = k =<< (:!) <$> bottomUpExprM k e1 <*> bottomUpExprM k e2
+bottomUpExprM k (Pat (Const c)) = k (Pat (Const c))
+bottomUpExprM _ _ = error "NYI"
 
 --------------------------------------------------------------------------------
 
 data Const
   = I32Const Int32
 
+deriving instance Show Const
 deriving instance Eq Const
 deriving instance Ord Const
 
