@@ -1,6 +1,7 @@
 module Feldspar.Inline
   ( -- * Inlining
-    inline
+    Inline(..)
+  , inline
   , inline'
 
     -- * Analysis
@@ -13,16 +14,20 @@ import Zabt (pattern Pat, subst1, pattern Var)
 
 --------------------------------------------------------------------------------
 
-inline :: Expr -> Expr
-inline e = if e' == e then e' else inline e'
-  where e' = inline' e
+data Inline = Inline
+  { inlineThreshold :: Int
+  }
 
-inline' :: Expr -> Expr
-inline' = bottomUpExpr go
+inline :: Inline -> Expr -> Expr
+inline i e = if e' == e then e' else inline i e'
+  where e' = inline' i e
+
+inline' :: Inline -> Expr -> Expr
+inline' i = bottomUpExpr go
   where
   go (Let x e1 e2)
-    | size e1 <= 2 = subst1 (x, e1) e2
-    | otherwise    = Let x e1 e2
+    | size e1 <= inlineThreshold i = subst1 (x, e1) e2
+    | otherwise                    = Let x e1 e2
   go x = x
 
 --------------------------------------------------------------------------------
