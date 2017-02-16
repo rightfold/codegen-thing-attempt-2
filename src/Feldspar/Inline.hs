@@ -5,6 +5,7 @@ module Feldspar.Inline
   ) where
 
 import Feldspar.AST (bottomUpExpr, Expr, pattern Let, sizeExpr)
+import Data.Function.Converge (converge)
 import Prelude
 import Zabt (subst1)
 
@@ -13,8 +14,7 @@ data Inline = Inline
   }
 
 inline :: Inline -> Expr -> Expr
-inline i e = if e' == e then e' else inline i e'
-  where e' = inline' i e
+inline i = converge (inline' i)
 
 inline' :: Inline -> Expr -> Expr
 inline' i = bottomUpExpr go

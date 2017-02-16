@@ -11,12 +11,38 @@ library
     Feldspar.FloatOut,
     Feldspar.Inline,
     Feldspar.Intrinsic
+  other-modules:
+    Data.Function.Converge
   build-depends:
     base >= 4.9 && < 5,
     containers >= 0.5 && < 1,
     mtl >= 2.2 && < 3,
     text >= 1.2 && < 2,
     transformers-supply >= 0.1 && <1,
+    zabt >= 0.4 && < 1
+
+  ghc-options: -Wall
+
+  default-language: Haskell2010
+  default-extensions:
+    DeriveFoldable,
+    DeriveFunctor,
+    FlexibleContexts,
+    FlexibleInstances,
+    FunctionalDependencies,
+    MultiParamTypeClasses,
+    NoImplicitPrelude,
+    OverloadedStrings,
+    PatternSynonyms,
+    StandaloneDeriving
+
+executable feldsparc
+  hs-source-dirs: feldsparc
+  main-is: Main.hs
+  build-depends:
+    base >= 4.9 && < 5,
+    feldspar,
+    text >= 1.2 && < 2,
     zabt >= 0.4 && < 1
 
   ghc-options: -Wall
