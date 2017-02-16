@@ -18,6 +18,9 @@ module Feldspar.AST
   , prettyName
   , prettyExpr
   , prettyConst
+
+    -- * Analysis
+  , sizeExpr
   ) where
 
 import Data.Int (Int32)
@@ -118,3 +121,12 @@ prettyExpr _ = error "NYI"
 
 prettyConst :: Const -> Text
 prettyConst (I32Const i) = Text.pack (show i)
+
+--------------------------------------------------------------------------------
+
+sizeExpr :: Expr -> Int
+sizeExpr (Var _) = 1
+sizeExpr (_ :\ e) = 1 + sizeExpr e
+sizeExpr (e1 :! e2) = 1 + sizeExpr e1 + sizeExpr e2
+sizeExpr (Pat (Const _)) = 1
+sizeExpr _ = error "NYI"

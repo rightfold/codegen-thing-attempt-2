@@ -1,18 +1,12 @@
 module Feldspar.Inline
-  ( -- * Inlining
-    Inline(..)
+  ( Inline(..)
   , inline
   , inline'
-
-    -- * Analysis
-  , size
   ) where
 
-import Feldspar.AST (pattern (:\), pattern (:!), bottomUpExpr, Expr, ExprF(..), pattern Let)
+import Feldspar.AST (bottomUpExpr, Expr, pattern Let, sizeExpr)
 import Prelude
-import Zabt (pattern Pat, subst1, pattern Var)
-
---------------------------------------------------------------------------------
+import Zabt (subst1)
 
 data Inline = Inline
   { inlineThreshold :: Int
@@ -26,15 +20,6 @@ inline' :: Inline -> Expr -> Expr
 inline' i = bottomUpExpr go
   where
   go (Let x e1 e2)
-    | size e1 <= inlineThreshold i = subst1 (x, e1) e2
-    | otherwise                    = Let x e1 e2
+    | sizeExpr e1 <= inlineThreshold i = subst1 (x, e1) e2
+    | otherwise                        = Let x e1 e2
   go x = x
-
---------------------------------------------------------------------------------
-
-size :: Expr -> Int
-size (Var _) = 1
-size (_ :\ e) = 1 + size e
-size (e1 :! e2) = 1 + size e1 + size e2
-size (Pat (Const _)) = 1
-size _ = error "NYI"
