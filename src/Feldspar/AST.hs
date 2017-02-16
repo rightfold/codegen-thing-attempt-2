@@ -38,7 +38,7 @@ infixl 1 :!
 
 data Name
   = Local Int Text
-  | Global Int Text
+  | Global Text
 
 deriving instance Eq Name
 deriving instance Ord Name
@@ -48,7 +48,7 @@ instance IsString Name where
 
 instance Freshen Name where
   freshen (Local n t) = Local (n + 1) t
-  freshen (Global n t) = Global (n + 1) t
+  freshen (Global t) = Global t
 
 --------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ deriving instance Ord Const
 prettyName :: Name -> Text
 prettyName (Local 0 t) = "%" <> t
 prettyName (Local i t) = "%" <> t <> "$" <> Text.pack (show i)
-prettyName (Global _ t) = "@" <> t
+prettyName (Global t) = "@" <> t
 
 prettyExpr :: Expr -> Text
 prettyExpr (Var x) = prettyName x
