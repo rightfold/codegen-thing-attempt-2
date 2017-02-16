@@ -8,11 +8,15 @@ library
   exposed-modules:
     Feldspar.AST,
     Feldspar.ConstantFold,
+    Feldspar.FloatOut,
     Feldspar.Inline,
     Feldspar.Intrinsic
   build-depends:
     base >= 4.9 && < 5,
+    containers >= 0.5 && < 1,
+    mtl >= 2.2 && < 3,
     text >= 1.2 && < 2,
+    transformers-supply >= 0.1 && <1,
     zabt >= 0.4 && < 1
 
   ghc-options: -Wall
@@ -21,6 +25,10 @@ library
   default-extensions:
     DeriveFoldable,
     DeriveFunctor,
+    FlexibleContexts,
+    FlexibleInstances,
+    FunctionalDependencies,
+    MultiParamTypeClasses,
     NoImplicitPrelude,
     OverloadedStrings,
     PatternSynonyms,
@@ -34,11 +42,14 @@ test-suite test
   other-modules:
     Feldspar.ASTSpec,
     Feldspar.ConstantFoldSpec,
+    Feldspar.FloatOutSpec,
     Feldspar.InlineSpec
   build-depends:
     base >= 4.9 && < 5,
     feldspar,
     hspec >= 2.4 && < 3,
+    mtl >= 2.2 && < 3,
+    transformers-supply >= 0.1 && <1,
     zabt >= 0.4 && < 1
 
   ghc-options: -Wall
@@ -47,6 +58,10 @@ test-suite test
   default-extensions:
     DeriveFoldable,
     DeriveFunctor,
+    FlexibleContexts,
+    FlexibleInstances,
+    FunctionalDependencies,
+    MultiParamTypeClasses,
     NoImplicitPrelude,
     OverloadedStrings,
     PatternSynonyms,

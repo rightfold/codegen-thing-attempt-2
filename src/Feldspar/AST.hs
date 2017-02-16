@@ -12,6 +12,8 @@ module Feldspar.AST
   , pattern I32
   , bottomUpExpr
   , bottomUpExprM
+  , bottomUpExprChildren
+  , bottomUpExprChildrenM
 
     -- * Constants
   , Const(..)
@@ -94,11 +96,17 @@ bottomUpExpr :: (Expr -> Expr) -> Expr -> Expr
 bottomUpExpr f = runIdentity . bottomUpExprM (Identity . f)
 
 bottomUpExprM :: (Monad m) => (Expr -> m Expr) -> Expr -> m Expr
-bottomUpExprM k (Var x) = k (Var x)
-bottomUpExprM k (x :\ e) = k =<< (x :\) <$> bottomUpExprM k e
-bottomUpExprM k (e1 :! e2) = k =<< (:!) <$> bottomUpExprM k e1 <*> bottomUpExprM k e2
-bottomUpExprM k (Pat (Const c)) = k (Pat (Const c))
-bottomUpExprM _ _ = error "NYI"
+bottomUpExprM k e = k =<< bottomUpExprChildrenM k e
+
+bottomUpExprChildren :: (Expr -> Expr) -> Expr -> Expr
+bottomUpExprChildren f = runIdentity . bottomUpExprChildrenM (Identity . f)
+
+bottomUpExprChildrenM :: (Monad m) => (Expr -> m Expr) -> Expr -> m Expr
+bottomUpExprChildrenM _ (Var x) = pure (Var x)
+bottomUpExprChildrenM k (x :\ e) = (x :\) <$> bottomUpExprM k e
+bottomUpExprChildrenM k (e1 :! e2) = (:!) <$> bottomUpExprM k e1 <*> bottomUpExprM k e2
+bottomUpExprChildrenM _ (Pat (Const c)) = pure (Pat (Const c))
+bottomUpExprChildrenM _ _ = error "NYI"
 
 --------------------------------------------------------------------------------
 

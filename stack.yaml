@@ -1,3 +1,4 @@
 resolver: lts-8.0
 extra-deps:
+  - transformers-supply-0.1.0
   - zabt-0.4.0.0
