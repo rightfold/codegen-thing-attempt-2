@@ -2,7 +2,7 @@ module Feldspar.ConstantFold
   ( constantFold
   ) where
 
-import Feldspar.AST (pattern (:!), bottomUpExpr, Expr, ExprF(..), pattern I32)
+import Feldspar.AST (pattern (:!), bottomUpExpr, Expr, pattern I32)
 import Feldspar.Intrinsics (pattern AddI32)
 import Prelude
 import Zabt (pattern Var)
