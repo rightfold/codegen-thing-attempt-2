@@ -1,5 +1,5 @@
-module Feldspar.ConstantFold
-  ( constantFold
+module Feldspar.Arithmetic
+  ( arithmetic
   ) where
 
 import Feldspar.AST (pattern (:+), pattern (:*), bottomUpExpr, Expr, pattern I32)
@@ -7,8 +7,8 @@ import Prelude
 
 --------------------------------------------------------------------------------
 
-constantFold :: Expr -> Expr
-constantFold = bottomUpExpr go
+arithmetic :: Expr -> Expr
+arithmetic = bottomUpExpr go
   where
   go (I32 0 :+ b) = b
   go (b :+ I32 0) = b

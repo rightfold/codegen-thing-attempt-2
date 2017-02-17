@@ -6,8 +6,8 @@ cabal-version: >= 1.10
 library
   hs-source-dirs: src
   exposed-modules:
+    Feldspar.Arithmetic,
     Feldspar.AST,
-    Feldspar.ConstantFold,
     Feldspar.FloatOut,
     Feldspar.Inline,
     Feldspar.Intrinsic
@@ -66,8 +66,8 @@ test-suite test
   hs-source-dirs: test
   main-is: Main.hs
   other-modules:
+    Feldspar.ArithmeticSpec,
     Feldspar.ASTSpec,
-    Feldspar.ConstantFoldSpec,
     Feldspar.FloatOutSpec,
     Feldspar.InlineSpec
   build-depends:
