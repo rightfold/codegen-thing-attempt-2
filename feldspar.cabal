@@ -8,6 +8,7 @@ library
   exposed-modules:
     Feldspar.Arithmetic,
     Feldspar.AST,
+    Feldspar.EtaReduce,
     Feldspar.FloatOut,
     Feldspar.Inline,
     Feldspar.Intrinsic
@@ -68,6 +69,7 @@ test-suite test
   other-modules:
     Feldspar.ArithmeticSpec,
     Feldspar.ASTSpec,
+    Feldspar.EtaReduceSpec,
     Feldspar.FloatOutSpec,
     Feldspar.InlineSpec
   build-depends:
