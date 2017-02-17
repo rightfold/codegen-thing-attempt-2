@@ -8,10 +8,13 @@ library
   exposed-modules:
     Feldspar.Arithmetic,
     Feldspar.AST,
+    Feldspar.ECMAScript,
     Feldspar.EtaReduce,
     Feldspar.FloatOut,
     Feldspar.Inline,
-    Feldspar.Intrinsic
+    Feldspar.Intrinsic,
+    Language.ECMAScript.AST,
+    Language.ECMAScript.Pretty
   other-modules:
     Data.Function.Converge
   build-depends:
@@ -19,7 +22,7 @@ library
     containers >= 0.5 && < 1,
     mtl >= 2.2 && < 3,
     text >= 1.2 && < 2,
-    transformers-supply >= 0.1 && <1,
+    transformers-supply >= 0.1 && < 1,
     zabt >= 0.4 && < 1
 
   ghc-options: -Wall
@@ -77,7 +80,7 @@ test-suite test
     feldspar,
     hspec >= 2.4 && < 3,
     mtl >= 2.2 && < 3,
-    transformers-supply >= 0.1 && <1,
+    transformers-supply >= 0.1 && < 1,
     zabt >= 0.4 && < 1
 
   ghc-options: -Wall
