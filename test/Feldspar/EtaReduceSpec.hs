@@ -17,3 +17,6 @@ spec = do
     it "no eta reduce" $
       etaReduce ("x" :\ (Var "f" :! Var "y"))
         == ("x" :\ (Var "f" :! Var "y"))
+    it "no eta reduce" $
+      etaReduce ("x" :\ (Var "x" :! Var "x"))
+        == ("x" :\ (Var "x" :! Var "x"))
