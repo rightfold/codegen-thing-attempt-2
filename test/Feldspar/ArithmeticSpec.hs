@@ -49,7 +49,7 @@ spec = do
       arithmetic (Var (Intrinsic (DivI32 UndefinedZDP)) :! I32 10 :! I32 3)
         == I32 3
     it "integer division annihilation" $
-      arithmetic (Var (Intrinsic (DivI32 UndefinedZDP)) :! I32 0 :! I32 3)
+      arithmetic (Var (Intrinsic (DivI32 UndefinedZDP)) :! I32 0 :! Var "x")
         == I32 0
     it "integer zero division policy ZeroZDP" $
       arithmetic (Var (Intrinsic (DivI32 ZeroZDP)) :! Var "x" :! I32 0)
