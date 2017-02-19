@@ -7,7 +7,7 @@ module Feldspar.ECMAScript
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Feldspar.AST (pattern(:\), pattern(:!), Const(..), Expr, ExprF(..), pattern Let, Name(..))
-import Feldspar.Intrinsic (Intrinsic(..))
+import Feldspar.Intrinsic (Intrinsic(..), ZeroDivisionPolicy(..))
 import Language.ECMAScript.AST (JSExpr(..), JSStmt(..))
 import Prelude
 import Zabt (pattern Pat, pattern Var)
@@ -23,6 +23,11 @@ nameToExpr (Local i x) = JSIdent (localNameToIdent i x)
 nameToExpr (Global n) = JSStaticMember (JSIdent "__global") n
 nameToExpr (Intrinsic AddI32) = JSIdent "__addI32"
 nameToExpr (Intrinsic MulI32) = JSIdent "__mulI32"
+nameToExpr (Intrinsic (DivI32 p)) = JSIdent ("__divI32$" <> p')
+  where p' = case p of
+          ZeroZDP      -> "zero"
+          CrashZDP     -> "crash"
+          UndefinedZDP -> "undefined"
 
 exprToExpr :: Expr -> JSExpr
 exprToExpr (Var x) = nameToExpr x
@@ -41,3 +46,4 @@ exprToStmts f e = f $ exprToExpr e
 
 constToExpr :: Const -> JSExpr
 constToExpr (I32Const c) = JSNumber (fromIntegral c)
+constToExpr PoisonConst = JSIdent "__poison"

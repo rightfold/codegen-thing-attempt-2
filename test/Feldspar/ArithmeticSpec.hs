@@ -3,7 +3,8 @@ module Feldspar.ArithmeticSpec
   ) where
 
 import Feldspar.Arithmetic (arithmetic)
-import Feldspar.AST (pattern (:+), pattern (:*), pattern I32)
+import Feldspar.AST (pattern (:!), pattern (:+), pattern (:*), pattern I32, Name(..), pattern Poison)
+import Feldspar.Intrinsic (Intrinsic(..), ZeroDivisionPolicy(..))
 import Prelude
 import Test.Hspec (describe, it, Spec)
 import Zabt (pattern Var)
@@ -43,3 +44,16 @@ spec = do
           addYZ = Var "y" :+ Var "z"
       in arithmetic (mulXY :+ mulXZ)
            == (Var "x" :* addYZ)
+
+    it "integer division" $
+      arithmetic (Var (Intrinsic (DivI32 UndefinedZDP)) :! I32 10 :! I32 3)
+        == I32 3
+    it "integer division annihilation" $
+      arithmetic (Var (Intrinsic (DivI32 UndefinedZDP)) :! I32 0 :! I32 3)
+        == I32 0
+    it "integer zero division policy ZeroZDP" $
+      arithmetic (Var (Intrinsic (DivI32 ZeroZDP)) :! Var "x" :! I32 0)
+        == I32 0
+    it "integer zero division policy UndefinedZDP" $
+      arithmetic (Var (Intrinsic (DivI32 UndefinedZDP)) :! Var "x" :! I32 0)
+        == Poison

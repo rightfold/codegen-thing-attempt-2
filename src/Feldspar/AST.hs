@@ -12,6 +12,7 @@ module Feldspar.AST
   , pattern (:*)
   , pattern Let
   , pattern I32
+  , pattern Poison
   , bottomUpExpr
   , bottomUpExprM
   , bottomUpExprChildren
@@ -102,6 +103,9 @@ pattern Let x e1 e2 = (x :\ e2) :! e1
 pattern I32 :: Int32 -> Expr
 pattern I32 n = Pat (Const (I32Const n))
 
+pattern Poison :: Expr
+pattern Poison = Pat (Const PoisonConst)
+
 bottomUpExpr :: (Expr -> Expr) -> Expr -> Expr
 bottomUpExpr f = runIdentity . bottomUpExprM (Identity . f)
 
@@ -122,6 +126,7 @@ bottomUpExprChildrenM _ _ = error "NYI"
 
 data Const
   = I32Const Int32
+  | PoisonConst
 
 deriving instance Show Const
 deriving instance Eq Const
@@ -152,6 +157,7 @@ prettyExpr _ = error "NYI"
 
 prettyConst :: Const -> Text
 prettyConst (I32Const i) = Text.pack (show i)
+prettyConst PoisonConst = "poison"
 
 --------------------------------------------------------------------------------
 
